@@ -7,13 +7,12 @@ import employeeRoutes from './routes/employee';
 import hrRoutes from './routes/hr';
 import managerRoutes from './routes/manager';
 import Employee from './models/Employee';
-import bodyParser from 'body-parser';
 
 const seedManager = async () => {
   try {
     const managerEmail = 'manager@gmail.com';
     const existingManager = await Employee.findOne({ email: managerEmail });
-
+    
     if (!existingManager) {
       const manager = new Employee({
         name: 'Manager',
@@ -52,8 +51,7 @@ const startServer = async () => {
   await seedManager();
 
   const app = express();
-  app.use(cors({ origin: process.env.FRONTEND_URL || '*' }));  // Allow frontend domain
-  app.use(bodyParser.json());
+  app.use(cors());
   app.use(express.json());
 
   app.use('/test', (req, res) => {
