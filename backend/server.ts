@@ -7,17 +7,18 @@ import employeeRoutes from './routes/employee';
 import hrRoutes from './routes/hr';
 import managerRoutes from './routes/manager';
 import Employee from './models/Employee';
+import bodyParser from 'body-parser';
 
 const seedManager = async () => {
   try {
     const managerEmail = 'manager@gmail.com';
     const existingManager = await Employee.findOne({ email: managerEmail });
-    
+
     if (!existingManager) {
       const manager = new Employee({
         name: 'Manager',
         email: managerEmail,
-        password: 'm@n@ger',
+        password: '121212',
         role: 'manager',
         hourlyWage: 0
       });
@@ -51,9 +52,13 @@ const startServer = async () => {
   await seedManager();
 
   const app = express();
-  app.use(cors());
+  app.use(cors({ origin: process.env.FRONTEND_URL || '*' }));  // Allow frontend domain
+  app.use(bodyParser.json());
   app.use(express.json());
 
+  app.use('/test', (req, res) => {
+    res.send('Hello World');
+  });
   app.use('/api/auth', authRoutes);
   app.use('/api/employee', employeeRoutes);
   app.use('/api/hr', hrRoutes);
